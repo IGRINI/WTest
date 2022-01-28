@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace View.UI
 {
     [RequireComponent(typeof(Button))]
-    public class AnimatedButton : AnimatedUiElement
+    public class AnimatedShowButton : AnimatedShowUi
     {
         [HideInInspector]
         public Button Button;

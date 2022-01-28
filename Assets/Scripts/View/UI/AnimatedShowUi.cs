@@ -6,7 +6,7 @@ using UnityEngine;
 namespace View.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public abstract class AnimatedUiElement : MonoBehaviour
+    public abstract class AnimatedShowUi : MonoBehaviour
     {
         protected CanvasGroup _canvasGroup;
         private Tween _tween;

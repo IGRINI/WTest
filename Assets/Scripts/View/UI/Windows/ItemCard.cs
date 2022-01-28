@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace View.UI.Windows
 {
-    public class ItemCard : AnimatedUiElement, IPoolable
+    public class ItemCard : AnimatedShowUi, IPoolable
     {
         [SerializeField] private Image _image;
         [SerializeField] private TMP_Text _itemName;

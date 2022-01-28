@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace View.UI.Windows
 {
-    public class OpenChest : AnimatedUiElement
+    public class OpenChest : AnimatedShowUi
     {
         [SerializeField] private Image _chestImage;
         public Image ChestImage => _chestImage;
