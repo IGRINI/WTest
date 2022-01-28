@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Data;
 using Pool;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Services
     public sealed class ChestService : MonoBehaviour
     {
         public const string ChestItemsUrl = "http://dev-mob.bfa.games/hamsters//chests/lut_test";
+        public const string ItemsImagesUrl = "https://raw.githubusercontent.com/IGRINI/WTest/master/Assets/Sprites/Items/";
         
         [SerializeField] private GameObject _itemCardPrefab;
         
@@ -19,7 +21,9 @@ namespace Services
 
         private PrefabPool<ItemCard> _itemCardPool;
         private ItemCard[] _activeItemCards = Array.Empty<ItemCard>();
-            
+
+        private Dictionary<string, Sprite> _itemSprites = new Dictionary<string, Sprite>();
+
         private void Start()
         {
             print("Initialized item cards pool");
@@ -49,6 +53,7 @@ namespace Services
             print("Request completed");
             print("Get request text and deserialize it from json");
             var chestInfo = JsonUtility.FromJson<ChestInfo>(request.webRequest.downloadHandler.text);
+            DownloadItemImages(chestInfo);
             print("Despawn previous cards");
             foreach (ItemCard activeItemCard in _activeItemCards)
             {
@@ -76,8 +81,30 @@ namespace Services
                 return;
             }
             var itemInfo = chestInfo.chest_items[index];
-            _activeItemCards[index].Initialize(itemInfo.itemkey, itemInfo.slottype, itemInfo.rarity, itemInfo.level, () => ItemsShowRecursive(chestInfo, ++index));
+            _activeItemCards[index].Initialize(itemInfo.itemkey, itemInfo.slottype, itemInfo.rarity, itemInfo.level, _itemSprites[itemInfo.itemkey], () => ItemsShowRecursive(chestInfo, ++index));
             _chestItemsWindow.SmoothScrollToRight();
+        }
+
+        private void DownloadItemImages(ChestInfo chestInfo)
+        {
+            foreach (ChestInfo.ChestItemInfo item in chestInfo.chest_items)
+            {
+                if (_itemSprites.ContainsKey(item.itemkey))
+                    continue;
+                _itemSprites.Add(item.itemkey, null);
+                UnityWebRequestTexture.GetTexture($"{ItemsImagesUrl}{item.itemkey}.png")
+                    .SendWebRequest()
+                    .completed += x => OnItemImageDownloaded(x, item.itemkey);
+            }
+        }
+
+        private void OnItemImageDownloaded(AsyncOperation requestOperation, string key)
+        {
+            UnityWebRequestAsyncOperation request = (UnityWebRequestAsyncOperation)requestOperation;
+            if (request.webRequest.responseCode != 200)
+                throw new Exception("Image not founded");
+            Texture2D texture = DownloadHandlerTexture.GetContent(request.webRequest);
+            _itemSprites[key] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         }
     }
 }

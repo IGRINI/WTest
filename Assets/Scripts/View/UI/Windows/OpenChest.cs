@@ -12,9 +12,9 @@ namespace View.UI.Windows
         
         [SerializeField] private Button _openChestButton;
 
-        public void SetChestImage(Image image)
+        public void SetChestSprite(Sprite sprite)
         {
-            _chestImage = image;
+            _chestImage.sprite = sprite;
         }
 
         public void SetButtonInteractable(bool interactable)

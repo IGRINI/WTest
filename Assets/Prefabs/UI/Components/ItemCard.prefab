@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0bb74e1177948ae9c1b0d8089b4c429, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _image: {fileID: 770147987728447318}
   _itemName: {fileID: 2054045295816510376}
   _itemSlotType: {fileID: 960519191449415705}
   _itemRarity: {fileID: 960519191555436623}
