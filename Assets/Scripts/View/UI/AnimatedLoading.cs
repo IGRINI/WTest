@@ -12,41 +12,21 @@ namespace View.UI
         private readonly Vector3 _minScale = new Vector3(0, 0, 0);
         private const float _scaleDuration = 0.3f;
         
-        private void OnEnable()
+        private void Awake()
         {
             transform.localScale = _defaultScale;
-            StartScaleTweenWithType(ScaleType.Decrease);
-        }
-
-        private void StartScaleTweenWithType(ScaleType scaleType)
-        {
-            _tween?.Kill();
-            switch (scaleType)
-            {
-                case ScaleType.Decrease:
-                    StartScaleTweenWithContinue(_minScale, ScaleType.Increase);
-                    break;
-                case ScaleType.Increase:
-                    StartScaleTweenWithContinue(_defaultScale, ScaleType.Decrease);
-                    break;
-            }
-        }
-
-        private void StartScaleTweenWithContinue(Vector3 endValue, ScaleType nextType)
-        {
-            _tween = transform.DOScale(endValue, _scaleDuration);
-            _tween.OnComplete(() => StartScaleTweenWithType(nextType));
+            _tween = transform.DOScale(_minScale, _scaleDuration);
+            _tween.SetLoops(-1, LoopType.Yoyo);
         }
 
         private void OnDisable()
         {
-            _tween.Kill();
+            _tween.Pause();
         }
-        
-        private enum ScaleType
+
+        private void OnEnable()
         {
-            Increase,
-            Decrease
+            _tween.Restart();
         }
     }
 }
